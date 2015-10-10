@@ -165,7 +165,7 @@ VectorTarget.IsFastClickDragMode = function() {
         }
     });
     
-    VectorTarget.SetFastClickDragMode(true);
+    //VectorTarget.SetFastClickDragMode(true);
     
 })();
 

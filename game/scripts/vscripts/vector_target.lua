@@ -99,6 +99,7 @@ function VectorTarget:LoadKV(kv, forgetSource)
         if type(keys) == "table" then
             keys = keys["VectorTarget"]
             if keys and keys ~= "false" and keys ~= "0" and (type(keys) ~= "number" or keys ~= 0) then
+				print("Found vec abil")
                 if type(keys) ~= "table" then
                     keys = { }
                 end
@@ -115,7 +116,6 @@ end
 
 function VectorTarget:ReloadAllKV(deletePrevious)
     --[[ Reloads KV from files/tables passed via VectorTarget:LoadKV
-
         If the first argument is false, prevents deletion of previous KV data before reloading
     ]]
     if deletePrevious ~= false then
@@ -200,6 +200,7 @@ end
 
 -- call this on a unit to add vector target functionality to its abilities
 function VectorTarget:WrapUnit(unit)
+	print("Wrapping unit")
     for i=0, unit:GetAbilityCount()-1 do
         local abil = unit:GetAbilityByIndex(i)
         if abil ~= nil then
@@ -209,13 +210,22 @@ function VectorTarget:WrapUnit(unit)
             end
         end
     end
+	for i=0, 5 do
+        local abil = unit:GetItemInSlot(i)
+        if abil ~= nil then
+            local keys = self.abilityKeys[abil:GetAbilityName()]
+            if keys then
+                self:WrapAbility(abil, keys)
+            end
+        end	end
 end
 
 --wrapper applied to all vector targeted abilities during initialization
 function VectorTarget:WrapAbility(abil, keys, reloading)
+	print("Wrapping ability ", abil:GetAbilityName())
     local VectorTarget = self
     local abiName = abil:GetAbilityName()
-    if "ability_lua" ~= abil:GetClassname() then
+    if "ability_lua" ~= abil:GetClassname() and "item_lua" ~= abil:GetClassname() then
         print("[VECTORTARGET] Warning: " .. abiName .. " is not a Lua ability and cannot be vector targeted.")
         return
     end
